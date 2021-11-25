@@ -60,6 +60,14 @@ public class Post {
         this.content = content;
     }
 
+    public void addUserName(String username) {
+        this.username =username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
     public String getContent() {
         return this.content;
     }
@@ -82,6 +90,13 @@ public class Post {
         this.content = content;
     }
 
+    public void addLikes(int likes) {
+        this.likes=likes;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
     public void populate(String content, LocalDateTime time, String username, int likes) {
         setContent(content);
         setTime(time);
