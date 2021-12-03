@@ -46,4 +46,6 @@ public class User {
     public void setUsername(String username) { this.username = username; }
     public void setPassword(String password) { this.password = password; }
     public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+    public Long idFromUsername(String username) { return this.id; }
+
 }
