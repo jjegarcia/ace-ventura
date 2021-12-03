@@ -92,6 +92,9 @@ public class UsersController {
         currentUser.setProfilePicture(newFile.toString());
         userRepository.save(currentUser);
 
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename());
+
         return "redirect:profilePicture";
     }
 
