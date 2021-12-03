@@ -1,19 +1,50 @@
 package com.makersacademy.acebook.model;
 
-import com.makersacademy.acebook.repository.PostRepository;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+public class LikesHandler {
+    private String username;
 
-public class LikesHandler{
-    private final PostRepository repository;
-
-    public LikesHandler(PostRepository repository) {
-        this.repository = repository;
+    public boolean liked(Iterable<Like> iLikesList, RedirectAttributes redirect, String username, Post post) {
+        this.username = username;
+        boolean isLikable = isLikable(redirect, post, iLikesList);
+        return isLikable;
     }
 
-    public void handleLike(HttpServletRequest request) {
-        Post post = repository.findById(Long.parseLong(request.getParameter("postId"))).get();
-        post.incrementLikes();
-        repository.save(post);
+    private boolean isLikable(RedirectAttributes redirect, Post post, Iterable<Like> iLikeList) {
+        boolean isSameUser = post.getUsername().equals(username);
+        if (isSameUser) {
+            redirect.addFlashAttribute("User cannot like its own posts");
+            return false;
+        }
+        boolean userHasAlreadyLikedPost = postHasUser(post, iLikeList);
+        if (userHasAlreadyLikedPost) {
+            redirect.addFlashAttribute("User has already liked this posts");
+        }
+        return !userHasAlreadyLikedPost;
     }
+
+    private Boolean postHasUser(Post post, Iterable<Like> iLikeList) {
+        LikesList olikeList = new LikesList();
+        olikeList.setList(iLikeList);
+        ArrayList<Like> arrayList = olikeList.likeArrayList;
+        List<Like> test1 = arrayList.stream().filter(like ->
+                like.getPost_id().equals(post.getId())
+        ).collect(Collectors.toList());
+        List<String> test2 = test1.stream().map(Like::getUsername).collect(Collectors.toList());
+
+        AtomicBoolean match = new AtomicBoolean(false);
+        test2.forEach(user -> {
+                    if (user.equals(username)) {
+                        match.set(true);
+                    }
+                }
+        );
+        return match.get();
+    }
+
 }
