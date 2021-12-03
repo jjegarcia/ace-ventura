@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,7 +78,8 @@ public class UsersController {
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                          RedirectAttributes redirectAttributes) throws IOException, SQLException {
 
-        File newFile = multipartToFile(file, file.getOriginalFilename());
+
+
 
         //Add the picture to the user profile DB as a url
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -89,8 +91,17 @@ public class UsersController {
         resultSet.next();
         Long userID = resultSet.getLong (1);
         User currentUser = userRepository.findById(userID).get();
+        String origFilename = file.getOriginalFilename();
+        String fileExt = StringUtils.getFilenameExtension(origFilename);
+//        String fileExt = orgiFilename.getChars(origFilename.length()-3, origFilename.length());
+
+        String userName = currentUser.getUsername();
+        //        File newFile = multipartToFile(file, file.getOriginalFilename());
+        File newFile = multipartToFile(file, userName, fileExt);
+
         currentUser.setProfilePicture(newFile.toString());
         userRepository.save(currentUser);
+
 
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename());
@@ -98,8 +109,10 @@ public class UsersController {
         return "redirect:profilePicture";
     }
 
-    public  static File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
-        File convFile = new File(System.getProperty("java.io.tmpdir")+"/"+fileName);
+    public  static File multipartToFile(MultipartFile multipart, String fileName, String fileExt) throws IllegalStateException, IOException {
+//        File convFile = new File(System.getProperty("java.io.tmpdir")+"/"+fileName);
+        System.out.println(System.getProperty("user.dir") + "src/main/resources/static/images/" +fileName);
+        File convFile = new File(System.getProperty("user.dir") + "/src/main/resources/static/images/" +fileName + "." + fileExt);
         multipart.transferTo(convFile);
         return convFile;
     }

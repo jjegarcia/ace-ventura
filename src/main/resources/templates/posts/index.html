@@ -33,7 +33,11 @@
             <div th:each="post: ${posts}" class="row" >
                 <div class = "col-2">
                     <div class="card m-3">
-                        <img class="card-img" th:src="@{images/images.png}" alt="Card image holder">
+<!--                        How to find th epicture for teh user
+                            We have the username
+-->
+                        <img class="card-img" th:src ="${ 'images/' +post.getUsername()+ '.png' }" alt="Card image holder">
+<!--                        <img class="card-img" th:src="@{images/images.png}" alt="Card image holder">-->
                     </div>
                 </div>
                 <div class = "col-6">
