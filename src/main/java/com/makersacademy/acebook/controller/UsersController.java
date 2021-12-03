@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import java.io.*;
+
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
-import java.util.Optional;
 
 @Controller
 public class UsersController {
@@ -105,5 +106,8 @@ public class UsersController {
     Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/acebook_springboot_development");
     return con;
 }
+
+
+
 
 }
