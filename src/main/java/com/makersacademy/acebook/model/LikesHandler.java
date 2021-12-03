@@ -4,6 +4,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class LikesHandler {
     private String username;
@@ -33,8 +34,8 @@ public class LikesHandler {
         ArrayList<Like> arrayList = olikeList.likeArrayList;
         List<Like> test1 = arrayList.stream().filter(like ->
                 like.getPost_id().equals(post.getId())
-        ).toList();
-        List<String> test2 = test1.stream().map(Like::getUsername).toList();
+        ).collect(Collectors.toList());
+        List<String> test2 = test1.stream().map(Like::getUsername).collect(Collectors.toList());
 
         AtomicBoolean match = new AtomicBoolean(false);
         test2.forEach(user -> {
